@@ -3,18 +3,25 @@
     <div class="container">
       <div class="flexitem item1">
         <h1>未着手</h1>
+        <h3>タスク数：{{items1.length}}</h3>
         <draggable tag="ul" v-bind:options="{group:'items'}" v-model="items1">
+          
+          <!-- コンポーネント候補: start -->
           <li v-for="(item,index) in items1" v-bind:key="item.id">
+            <!-- コンポーネント候補: start -->
             <label v-bind:class="{ done: item.ischecked }">
               <input type="checkbox" v-model="item.ischecked" />
               {{item.title}}
               <button v-on:click="deletebutton1(index)">delete</button>
             </label>
+            <!-- コンポーネント候補:end -->
           </li>
+          <!-- コンポーネント候補:end -->
         </draggable>
       </div>
       <div class="flexitem item2">
         <h1>進行中</h1>
+        <h3>タスク数：{{items2.length}}</h3>
         <draggable tag="ul" v-bind:options="{group:'items'}" v-model="items2">
           <li v-for="(item,index) in items2" v-bind:key="item.id">
             <label v-bind:class="{ done: item.ischecked }">
@@ -28,7 +35,7 @@
 
       <div class="flexitem item3">
         <h1>TODOリスト</h1>
-
+        <h3>タスク数：{{items3.length}}</h3>
         <p>
           <input
             type="text"
@@ -43,8 +50,11 @@
           <li v-for="(item,index) in items3" v-bind:key="item.id">
             <label v-bind:class="{ done: item.ischecked }">
               <input type="checkbox" v-model="item.ischecked" />
-              {{item.title}}
-              <button v-on:click="deletebutton3(index)">delete</button>
+              {{item.title}} : {{ item.timestamp | moment }}
+              <button
+                v-on:click="deletebutton3(index)"
+              >delete</button>
+              <button>edit</button>
             </label>
           </li>
         </draggable>
@@ -52,8 +62,9 @@
 
       <div class="flexitem item4">
         <h1>確認待ち</h1>
+        <h3>タスク数：{{items4.length}}</h3>
         <draggable tag="ul" v-bind:options="{group:'items'}" v-model="items4">
-           <li v-for="(item,index) in items4" v-bind:key="item.id">
+          <li v-for="(item,index) in items4" v-bind:key="item.id">
             <label v-bind:class="{ done: item.ischecked }">
               <input type="checkbox" v-model="item.ischecked" />
               {{item.title}}
@@ -64,8 +75,9 @@
       </div>
       <div class="flexitem item5">
         <h1>完了</h1>
+        <h3>タスク数：{{items5.length}}</h3>
         <draggable tag="ul" v-bind:options="{group:'items'}" v-model="items5">
-           <li v-for="(item,index) in items5" v-bind:key="item.id">
+          <li v-for="(item,index) in items5" v-bind:key="item.id">
             <label v-bind:class="{ done: item.ischecked }">
               <input type="checkbox" v-model="item.ischecked" />
               {{item.title}}
@@ -80,9 +92,15 @@
 
 <script>
 import draggable from "vuedraggable";
+import moment from "moment";
 export default {
   components: {
     draggable
+  },
+  filters: {
+    moment: function(date) {
+      return moment(date).format("YYYY/MM/DD HH:mm");
+    }
   },
   data: function() {
     return {
@@ -95,6 +113,7 @@ export default {
       id: 0
     };
   },
+
   methods: {
     addbutton: function() {
       if (this.newitemtitle === "") return;
@@ -103,6 +122,10 @@ export default {
         ischecked: false,
         id: this.id++
       });
+
+      // localStorage.setItem("title", this.newitemtitle);
+      // localStorage.setItem("id", this.id);
+      // localStorage.setItem('title', JSON.stringify(this.newitemtitle));
       this.newitemtitle = "";
     },
     deletebutton1: function(index) {
@@ -129,7 +152,7 @@ export default {
       if (confirm("本当に削除しますか？")) {
         this.items5.splice(index, 1);
       }
-    },
+    }
   }
 };
 </script>
@@ -271,7 +294,12 @@ h1 {
   padding: 20px;
   text-align: center;
 }
-
+h3{
+  font-size:23px;
+  font-weight: bold;
+  text-align: right;
+  margin:0px 10px 0 10px;
+}
 .container {
   display: flex;
   height: 100%;
